@@ -1,0 +1,169 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CPSA Practice</title>
+<style>
+  :root{
+    --bg:#0f1117; --card:#1a1d27; --fg:#e6e8ee; --mut:#8b90a0;
+    --line:#2a2e3b; --acc:#5b8cff; --ok:#2ecc71; --bad:#ff5b6e;
+  }
+  @media (prefers-color-scheme: light){
+    :root{--bg:#f4f5f8;--card:#fff;--fg:#1a1d27;--mut:#666c7a;--line:#e2e4ea;}
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg)}
+  .wrap{max-width:720px;margin:0 auto;padding:16px}
+  h1{font-size:20px;margin:8px 0 4px}
+  .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+  select,button{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);
+    border-radius:8px;padding:8px 12px;cursor:pointer}
+  button:hover,select:hover{border-color:var(--acc)}
+  button:disabled{opacity:.5;cursor:default}
+  .prog{font-size:13px;color:var(--mut);margin-left:auto}
+  .track{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin:4px 0 16px}
+  .fill{height:100%;background:var(--acc);width:0;transition:width .2s}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .topic{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--acc);font-weight:600}
+  .q{font-size:18px;font-weight:600;margin:8px 0 16px;white-space:pre-wrap}
+  .opts{display:flex;flex-direction:column;gap:10px}
+  .opt{text-align:left;padding:12px 14px;line-height:1.4}
+  .opt.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+  .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
+  .note{margin-top:14px;padding:12px 14px;border-left:3px solid var(--acc);background:color-mix(in srgb,var(--acc) 8%,transparent);
+    border-radius:0 8px 8px 0;font-size:14px;color:var(--mut);display:none;white-space:pre-wrap}
+  .note.show{display:block}
+  .foot{display:flex;gap:8px;margin-top:16px}
+  .next{margin-left:auto;background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
+  .done{text-align:center;padding:40px 20px;color:var(--mut)}
+  kbd{background:var(--line);border-radius:4px;padding:1px 6px;font-size:12px}
+</style>
+
+<div class="wrap">
+  <h1>CPSA Practice</h1>
+  <div class="bar">
+    <select id="topic"></select>
+    <button id="shuffle">Shuffle</button>
+    <button id="missed">Missed only</button>
+    <button id="reset" title="Clear saved progress">Reset</button>
+    <span class="prog" id="prog"></span>
+  </div>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <div id="stage"></div>
+  <p style="color:var(--mut);font-size:13px;margin-top:16px">
+    <kbd>1</kbd>–<kbd>4</kbd> pick · <kbd>Enter</kbd>/<kbd>Space</kbd> next. Progress saved in this browser.
+  </p>
+</div>
+
+<script src="questions.js"></script>
+<script>
+const KEY='cpsa-progress';
+let state=JSON.parse(localStorage.getItem(KEY)||'{}');   // {id:{s:'known'|'missed', m:missCount}}
+// migrate old string format {id:'known'} -> {id:{s,m}}
+for(const k in state){ if(typeof state[k]==='string') state[k]={s:state[k],m:state[k]==='missed'?1:0}; }
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+
+// How many times a missed card is repeated in the "Missed only" deck = how hard it is.
+// This is the knob: linear in miss-count, capped at 4 so one nightmare card can't drown the rest.
+// Want harsher? try `(m||1)**2`. Gentler? `Math.min(m||1,2)`. Leitner-style? bucket m into 1/2/3.
+const weightFor = m => Math.min(m||1, 4);
+console.assert(weightFor(0)===1 && weightFor(1)===1 && weightFor(2)===2 && weightFor(9)===4, 'weightFor broken');
+
+let missedOnly=false, deck=[], pos=0, answered=false;
+
+// --- deck building -----------------------------------------------------------
+function topics(){return [...new Set(QUESTIONS.map(q=>q.t))].sort();}
+function buildDeck(){
+  const t=document.getElementById('topic').value;
+  const base=QUESTIONS.map((q,i)=>({...q,id:i}))
+    .filter(q=>t==='all'||q.t===t)
+    .filter(q=>!missedOnly||(state[q.id]&&state[q.id].s==='missed'));
+  // missed-only: repeat each card weightFor(misses) times so hard ones resurface more.
+  // ponytail: copies of an already-fixed card may linger in the current deck — harmless re-drill.
+  deck = missedOnly ? base.flatMap(q=>Array(weightFor(state[q.id].m)).fill(q)) : base;
+  pos=0;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// --- render ------------------------------------------------------------------
+function render(){
+  const stage=document.getElementById('stage');
+  updateProg();
+  if(pos>=deck.length){
+    stage.innerHTML=`<div class="card done"><p>Deck complete.</p>
+      <button class="next" onclick="restart()">Go again</button></div>`;
+    return;
+  }
+  answered=false;
+  const q=deck[pos];
+  const opts=shuffle(q.o.map((text,idx)=>({text,correct:idx===q.a})));
+  stage.innerHTML=`
+    <div class="card">
+      <div class="topic">${q.t} · ${pos+1}/${deck.length}</div>
+      <div class="q">${esc(q.q)}</div>
+      <div class="opts" id="opts"></div>
+      <div class="note" id="note">${q.n?esc(q.n):''}</div>
+      <div class="foot">
+        <span style="color:var(--mut);font-size:13px" id="verdict"></span>
+        <button class="next" id="nextBtn" disabled>Next →</button>
+      </div>
+    </div>`;
+  const box=document.getElementById('opts');
+  opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.textContent=`${i+1}. ${o.text}`;
+    b.onclick=()=>pick(o.correct,opts,box,b,q.id);
+    box.appendChild(b);
+  });
+  document.getElementById('nextBtn').onclick=advance;
+}
+
+function pick(correct,opts,box,clicked,id){
+  if(answered)return;
+  answered=true;
+  [...box.children].forEach((b,i)=>{
+    b.disabled=true;
+    if(opts[i].correct)b.classList.add('correct');   // always reveal the right answer
+  });
+  if(!correct)clicked.classList.add('wrong');          // flag only what you picked
+  const st = state[id] || (state[id]={m:0});
+  if(!correct) st.m=(st.m||0)+1;      // cumulative miss count drives the weighting
+  st.s = correct ? 'known' : 'missed';
+  save();
+  document.getElementById('verdict').textContent=correct?'✓ Correct':'✗ Marked for review';
+  document.getElementById('note').classList.add('show');
+  document.getElementById('nextBtn').disabled=false;
+}
+
+function advance(){pos++;render();}
+function restart(){buildDeck();shuffle(deck);render();}
+
+function updateProg(){
+  const total=QUESTIONS.length;
+  const known=Object.values(state).filter(v=>v.s==='known').length;
+  const missed=Object.values(state).filter(v=>v.s==='missed').length;
+  document.getElementById('prog').textContent=`${known} known · ${missed} to review · ${total} total`;
+  document.getElementById('fill').style.width=(100*known/total)+'%';
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// --- wiring ------------------------------------------------------------------
+const sel=document.getElementById('topic');
+sel.innerHTML='<option value="all">All topics</option>'+topics().map(t=>`<option>${t}</option>`).join('');
+sel.onchange=()=>{buildDeck();render();};
+document.getElementById('shuffle').onclick=()=>{shuffle(deck);pos=0;render();};
+document.getElementById('missed').onclick=e=>{
+  missedOnly=!missedOnly;
+  e.target.style.borderColor=missedOnly?'var(--acc)':'';
+  e.target.textContent=missedOnly?'Missed ✓':'Missed only';
+  buildDeck();render();
+};
+document.getElementById('reset').onclick=()=>{
+  if(confirm('Clear all saved progress?')){state={};save();buildDeck();render();}
+};
+document.addEventListener('keydown',e=>{
+  if(e.key>='1'&&e.key<='4'){const b=document.querySelectorAll('.opt')[+e.key-1];if(b&&!b.disabled)b.click();}
+  if((e.key==='Enter'||e.key===' ')&&answered){e.preventDefault();advance();}
+});
+
+buildDeck();render();
+</script>
