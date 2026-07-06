@@ -45,7 +45,7 @@ const QUESTIONS = [
 {src:"Bank",t:"DNS",q:"A DNS zone represents…",o:["A boundary of administrative authority","A single record","A caching server","A TCP session"],a:0,n:"A zone is a portion of the namespace managed by an authority."},
 
 // ---- Networking ----
-{src:"Bank",t:"Networking",q:"How many TCP/UDP ports exist?",o:["65,536 (0–65535)","1,024","49,152","32,768"],a:0,n:"16-bit port field = 0–65535."},
+{src:"Bank",t:"Networking",q:"How many TCP/UDP ports exist?",o:["65,536 (0–65535)","1,024","49,152","32,768"],a:0,n:"16-bit port field = 0–65535.",j:"MY REFRAME: the Bank asked \"how many IP addresses\" and answered 65536 — wrong for IPs (that's the port count / a /16). I rewrote it to ports, where 65536 is correct."},
 {src:"Bank",t:"Networking",q:"Default TTL on Linux?",o:["64","128","255","32"],a:0,n:"Linux=64, Windows=128, Solaris/Cisco=255."},
 {src:"Bank",t:"Networking",q:"Default TTL on Windows?",o:["128","64","255","32"],a:0,n:"Windows=128."},
 {src:"Bank",t:"Networking",q:"Default TTL on Solaris?",o:["255","64","128","32"],a:0,n:"Solaris=255."},
@@ -84,7 +84,7 @@ const QUESTIONS = [
 {src:"Bank",t:"Windows/Linux",q:"How do you list installed hotfixes in Windows?",o:["Get-Hotfix (or wmic qfe list)","Get-Patch","showrev -p","rpm -qa"],a:0,n:"Get-Hotfix / 'wmic qfe list full'."},
 {src:"Bank",t:"Windows/Linux",q:"How do you show missing patches on Solaris?",o:["showrev -p","patchadd -p","rpm -qa","yum list"],a:0,n:"'showrev -p' lists installed patches."},
 {src:"Bank",t:"Windows/Linux",q:"Risk of adding sbin directories to a normal user's $PATH?",o:["Users can invoke administrator binaries","It breaks login","No effect","It slows the shell"],a:0,n:"sbin holds privileged system binaries."},
-{src:"Bank",t:"Windows/Linux",q:"Which RID identifies the built-in Windows Administrator account?",o:["500","501","1000","512"],a:0,n:"RID 500 = Administrator, 501 = Guest, 1000+ = normal users."},
+{src:"Bank",t:"Windows/Linux",q:"Which RID identifies the built-in Windows Administrator account?",o:["500","501","1000","512"],a:0,n:"RID 500 = Administrator, 501 = Guest, 1000+ = normal users.",j:"MY REFRAME: the Bank's wording was garbled (\"In Linux, what RID...\"). RID 500 = Administrator is standard and what it intended; I rewrote it as a coherent Windows question."},
 {src:"Bank",t:"Windows/Linux",q:"How many FSMO roles exist in Active Directory?",o:["5","3","7","2"],a:0,n:"Schema, Domain Naming, RID, PDC Emulator, Infrastructure."},
 {src:"Bank",t:"Windows/Linux",q:"Command to list AD FSMO role holders?",o:["netdom query fsmo","dsquery fsmo","netstat -f","gpresult /fsmo"],a:0,n:"'netdom query fsmo' (not dsquery)."},
 {src:"Bank",t:"Windows/Linux",q:"IIS 7 shipped with which Windows version?",o:["Windows Vista / Server 2008","Windows 2000","Windows Server 2012","Windows XP"],a:0,n:"IIS 5=2000, 6=2003, 7=Vista/2008, 8.5=2012 R2."},
@@ -132,7 +132,7 @@ const QUESTIONS = [
 {src:"Bank",t:"Wireless",q:"WPA (v1) introduced which encryption improvement over WEP?",o:["TKIP","AES","RC4","DES"],a:0,n:"TKIP added per-packet keying; WPA2 moved to AES-CCMP."},
 {src:"Bank",t:"Wireless",q:"What is the fundamental cause of WEP's weakness?",o:["RC4 with a short, reused 24-bit IV","MD5 collisions","Weak DES keys","No password hashing"],a:0,n:"IV reuse in RC4 lets keystream be recovered."},
 {src:"Bank",t:"Wireless",q:"802.11a operates on which frequency band?",o:["5 GHz","2.4 GHz","900 MHz","60 GHz"],a:0,n:"802.11a = 5 GHz."},
-{src:"Bank",t:"Wireless",q:"802.11b operates on which frequency band?",o:["2.4 GHz","5 GHz","900 MHz","60 GHz"],a:0,n:"802.11b = 2.4 GHz, 11 Mbps."},
+{src:"Bank",t:"Wireless",q:"802.11b operates on which frequency band?",o:["2.4 GHz","5 GHz","900 MHz","60 GHz"],a:0,n:"802.11b = 2.4 GHz, 11 Mbps.",j:"MY CORRECTION: the Bank listed 802.11b as \"20 Mbps\" (wrong; it is 11 Mbps). I keyed the question on frequency band, which is unambiguous."},
 {src:"Bank",t:"Wireless",q:"802.11g operates on which frequency band?",o:["2.4 GHz","5 GHz","900 MHz","60 GHz"],a:0,n:"802.11g = 2.4 GHz, 54 Mbps."},
 {src:"Bank",t:"Wireless",q:"IEEE 802.15 refers to which technology?",o:["Bluetooth / WPAN (2.4 GHz)","Wi-Fi","Ethernet","Cellular"],a:0,n:"802.15 = Wireless Personal Area Networks (Bluetooth)."},
 
@@ -155,7 +155,7 @@ const QUESTIONS = [
 {src:"Bank",t:"Other Tech",q:"Which config files control TCP Wrappers?",o:["hosts.allow and hosts.deny","iptables.conf","xinetd.conf","/etc/services"],a:0,n:"Allow/deny host-based access to wrapped services."},
 {src:"Bank",t:"Other Tech",q:"In a MAC address, what do the first 3 bytes (OUI) identify?",o:["The manufacturer","The device serial","The VLAN","The region"],a:0,n:"OUI = Organisationally Unique Identifier (vendor)."},
 {src:"Bank",t:"Other Tech",q:"Which HTTP headers were historically used for cache control?",o:["Pragma and Cache-Control (no-cache)","Host and Referer","ETag and Age","Accept and Cookie"],a:0,n:"Pragma: no-cache is the legacy directive."},
-{src:"Bank",t:"Other Tech",q:"HTTP status code for 'Forbidden'?",o:["403","401","302","404"],a:0,n:"403 Forbidden. (401=Unauthorized, 302=redirect, 404=Not Found.)"},
+{src:"Bank",t:"Other Tech",q:"HTTP status code for 'Forbidden'?",o:["403","401","302","404"],a:0,n:"403 Forbidden. (401=Unauthorized, 302=redirect, 404=Not Found.)",j:"MY CORRECTION: the Bank stated 302 (wrong). Forbidden is 403 per the HTTP spec."},
 
 // ================= Second batch: full Tips cheat-sheet =================
 
@@ -204,8 +204,8 @@ const QUESTIONS = [
 {src:"Tips",t:"Networking",q:"Which Nmap scan is 'half-open'?",o:["-sS (SYN)","-sT (connect)","-sF (FIN)","-sA (ACK)"],a:0,n:"SYN scan doesn't complete the handshake."},
 
 // ---- Ports (extra) ----
-{src:"Tips",t:"Ports & Services",q:"Which port range is 'well-known / system'?",o:["0–1023","1024–49151","49152–65535","0–65535"],a:0,n:"0–1023 well-known, 1024–49151 registered, 49152–65535 dynamic/ephemeral."},
-{src:"Tips",t:"Ports & Services",q:"Which is the ephemeral/dynamic port range?",o:["49152–65535","0–1023","1024–49151","1024–65535"],a:0,n:"Ephemeral = 49152–65535."},
+{src:"Tips",t:"Ports & Services",q:"Which port range is 'well-known / system'?",o:["0–1023","1024–49151","49152–65535","0–65535"],a:0,n:"0–1023 well-known, 1024–49151 registered, 49152–65535 dynamic/ephemeral.",j:"MY NORMALIZATION: range boundaries are from the notes, but I used standard IANA names (well-known/registered/dynamic); the notes said \"system/private-user/ephemeral\"."},
+{src:"Tips",t:"Ports & Services",q:"Which is the ephemeral/dynamic port range?",o:["49152–65535","0–1023","1024–49151","1024–65535"],a:0,n:"Ephemeral = 49152–65535.",j:"MY NORMALIZATION: boundary is from the notes (\"ephemeral\"); I aligned the option labels to IANA naming."},
 {src:"Tips",t:"Ports & Services",q:"Finger service listens on which port?",o:["79","69","70","88"],a:0,n:"Finger = TCP 79."},
 {src:"Tips",t:"Ports & Services",q:"Kerberos uses which port?",o:["88","464","749","389"],a:0,n:"Kerberos = 88."},
 {src:"Tips",t:"Ports & Services",q:"LDAP uses which port?",o:["389","636","443","3268"],a:0,n:"389 LDAP, 636 LDAPS."},

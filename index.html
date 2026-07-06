@@ -34,6 +34,9 @@
   .note{margin-top:14px;padding:12px 14px;border-left:3px solid var(--acc);background:color-mix(in srgb,var(--acc) 8%,transparent);
     border-radius:0 8px 8px 0;font-size:14px;color:var(--mut);display:none;white-space:pre-wrap}
   .note.show{display:block}
+  .judge{margin-top:10px;padding:8px 10px;border-radius:6px;font-size:13px;
+    background:color-mix(in srgb,#e0a800 20%,transparent);color:#b8860b;border:1px solid color-mix(in srgb,#e0a800 45%,transparent)}
+  @media (prefers-color-scheme: dark){.judge{color:#ffcf4d}}
   .foot{display:flex;gap:8px;margin-top:16px}
   .next{margin-left:auto;background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
   .done{text-align:center;padding:40px 20px;color:var(--mut)}
@@ -103,7 +106,7 @@ function render(){
       <div class="topic"><span class="src src-${q.src}">${q.src}</span> ${q.t} · ${pos+1}/${deck.length}</div>
       <div class="q">${esc(q.q)}</div>
       <div class="opts" id="opts"></div>
-      <div class="note" id="note">${q.n?esc(q.n):''}</div>
+      <div class="note" id="note">${q.n?esc(q.n):''}${q.j?`<div class="judge">⚠ ${esc(q.j)}</div>`:''}</div>
       <div class="foot">
         <span style="color:var(--mut);font-size:13px" id="verdict"></span>
         <button class="next" id="nextBtn" disabled>Next →</button>
