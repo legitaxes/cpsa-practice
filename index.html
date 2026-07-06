@@ -23,6 +23,9 @@
   .fill{height:100%;background:var(--acc);width:0;transition:width .2s}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
   .topic{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--acc);font-weight:600}
+  .src{display:inline-block;font-size:10px;padding:1px 6px;border-radius:4px;margin-right:2px;vertical-align:1px}
+  .src-Bank{background:color-mix(in srgb,var(--acc) 22%,transparent);color:var(--acc)}
+  .src-Tips{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ok)}
   .q{font-size:18px;font-weight:600;margin:8px 0 16px;white-space:pre-wrap}
   .opts{display:flex;flex-direction:column;gap:10px}
   .opt{text-align:left;padding:12px 14px;line-height:1.4}
@@ -97,7 +100,7 @@ function render(){
   const opts=shuffle(q.o.map((text,idx)=>({text,correct:idx===q.a})));
   stage.innerHTML=`
     <div class="card">
-      <div class="topic">${q.t} · ${pos+1}/${deck.length}</div>
+      <div class="topic"><span class="src src-${q.src}">${q.src}</span> ${q.t} · ${pos+1}/${deck.length}</div>
       <div class="q">${esc(q.q)}</div>
       <div class="opts" id="opts"></div>
       <div class="note" id="note">${q.n?esc(q.n):''}</div>
