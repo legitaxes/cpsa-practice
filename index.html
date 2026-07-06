@@ -41,6 +41,9 @@
   .next{margin-left:auto;background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600}
   .done{text-align:center;padding:40px 20px;color:var(--mut)}
   kbd{background:var(--line);border-radius:4px;padding:1px 6px;font-size:12px}
+  .legend{font-size:12px;color:var(--mut);margin:0 0 16px;line-height:1.9}
+  .jflag{color:#b8860b;font-weight:700}
+  @media (prefers-color-scheme: dark){.jflag{color:#ffcf4d}}
 </style>
 
 <div class="wrap">
@@ -53,6 +56,11 @@
     <span class="prog" id="prog"></span>
   </div>
   <div class="track"><div class="fill" id="fill"></div></div>
+  <div class="legend">
+    <span class="src src-Bank">BANK</span> from the CPSA Question Bank
+    &nbsp;·&nbsp; <span class="src src-Tips">TIPS</span> from the CREST Tips notes
+    &nbsp;·&nbsp; <span class="jflag">⚠</span> answer was my judgement, not the source — verify it
+  </div>
   <div id="stage"></div>
   <p style="color:var(--mut);font-size:13px;margin-top:16px">
     <kbd>1</kbd>–<kbd>4</kbd> pick · <kbd>Enter</kbd>/<kbd>Space</kbd> next. Progress saved in this browser.
